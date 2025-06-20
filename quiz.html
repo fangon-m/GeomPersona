@@ -1,0 +1,232 @@
+<!-- quiz.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geom Persona Quiz</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="img/window-logo-03.jpg" type="image/png">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-logo">
+      <img src="img/logo-01.png" alt="Geom Persona Logo" style="width:20vw;vertical-align:middle;">
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="personas.html">Personas</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <form id="quizForm"></form>
+    <button id="nextBtn" onclick="nextQuestion()" style="display:none;">Next</button>
+    <div id="result"></div>
+  </div>
+  <script>
+    const questions = [
+      {
+        text: "One morning, the world suddenly changed — or maybe you're dreaming. There is no sky. Just infinite space above, and a strange sense of calm inside you. What do you build first?",
+        img: "img/quiz-01.jpg",
+        options: ["A", "B", "C", "D"]
+      },
+      {
+        text: "The universe noticed that you built something within their territory. Something tugs at your spirit — a kind of energy. What kind of energy draws you in?",
+        img: "img/quiz-02.jpg",
+        options: ["A", "B", "C", "D"]
+      },
+      {
+        text: "There is no one, but something pulses in the distance — sound without origin. You listen. What do you hear?",
+        img: "img/quiz-03.jpg",
+        options: ["A", "B", "C", "D"]
+      },
+      {
+        text: "A figure appears. You don’t know its name, only that the figure needs something from you. What role do you play in its story?",
+        img: "img/quiz-04.jpg",
+        options: ["A", "B", "C", "D"]
+      },
+      {
+        text: "Interacting with the figure triggered a surge of power within you. One action. One imprint. How do you use it?",
+        img: "img/quiz-05.jpg",
+        options: ["A", "B", "C", "D"]
+      },
+      {
+        text: "The power you used accidentally opened the reflector of stars. In this world, identity is fluid — unless you define it. What makes you feel most like yourself?",
+        img: "img/quiz-06.jpg",
+        options: ["A", "B", "C", "D"]
+      },
+      {
+        text: "The universe sent the stars to observe you. They see something in you. What do they see?",
+        img: "img/quiz-07.jpg",
+        options: ["A", "B", "C", "D"]
+      }
+    ];
+
+    const optionTexts = {
+      0: {
+        A: "A circle of meteoroids, glowing with warmth and presence.",
+        B: "A tower of stars, burning brightest at its peak.",
+        C: "A bridge of asteroids, built with the help of cosmic travelers.",
+        D: "A hidden room inside the moon, its door locked and mysterious."
+      },
+      1: {
+        A: "The urge to connect with unknown beings.",
+        B: "The darkness pulling me in — mysterious, maybe dangerous, but irresistible.",
+        C: "A wave of solitude that brings unexpected peace.",
+        D: "The steady pull that keeps everything grounded."
+      },
+      2: {
+        A: "Planets colliding in a playful cosmic dance.",
+        B: "A deep silence, yet ripples echo endlessly.",
+        C: "A melody from childhood, soft and familiar.",
+        D: "The roar of rocket engines — loud, thrilling, alive."
+      },
+      3: {
+        A: "The one who listens and remembers.",
+        B: "The one who dares them to leap.",
+        C: "The one who connects them to what they’re missing.",
+        D: "The one who plans and keeps things together."
+      },
+      4: {
+        A: "Letting it float above my hand, warming the air around us.",
+        B: "Launching it skyward to break open the darkness.",
+        C: "Whispering to it, unlocking something unseen.",
+        D: "Shaping it slowly into something lasting and real."
+      },
+      5: {
+        A: "A quiet forest, always alive beneath the calm.",
+        B: "A wildfire — warm, bright, sometimes overwhelming.",
+        C: "A sky full of stars, each one unique.",
+        D: "A clean blueprint, crafted with care."
+      },
+      6: {
+        A: "A steady light, always there to guide.",
+        B: "A spark in motion — brief, wild, unforgettable.",
+        C: "A shifting lens—never the same twice.",
+        D: "A monolith — patient, enduring, unmoved."
+      }
+    };
+
+    const questionTitles = [
+      "The Awakening",
+      "The Pull",
+      "The Sound",
+      "The Other",
+      "The Surge",
+      "The Mirror",
+      "The Gaze"
+    ];
+
+    // MBTI mapping for each question/option
+    // Each question tests a dimension: E/I, S/N, T/F, J/P, E/I, S/N, T/F
+    const mbtiMap = [
+      { A: 'E', B: 'I', C: 'E', D: 'I' }, // Q1
+      { A: 'S', B: 'N', C: 'S', D: 'N' }, // Q2
+      { A: 'T', B: 'F', C: 'T', D: 'F' }, // Q3
+      { A: 'J', B: 'P', C: 'J', D: 'P' }, // Q4
+      { A: 'E', B: 'I', C: 'E', D: 'I' }, // Q5
+      { A: 'S', B: 'N', C: 'S', D: 'N' }, // Q6
+      { A: 'T', B: 'F', C: 'T', D: 'F' }  // Q7
+    ];
+
+    // Map MBTI type to persona image and name (add your own images/names for all 16 types)
+    const mbtiToPersona = {
+  ISTJ: { name: "The Pillar", img: "img/geom-persona-13.jpg" },
+  ISFJ: { name: "The Lock", img: "img/geom-persona-14.jpg" },
+  INFJ: { name: "The Mirror", img: "img/geom-persona-04.jpg" },
+  INTJ: { name: "The Tower", img: "img/geom-persona-15.jpg" },
+  ISTP: { name: "The Stack", img: "img/geom-persona-07.jpg" },
+  ISFP: { name: "The Hollow", img: "img/geom-persona-03.jpg" },
+  INFP: { name: "The Drift", img: "img/geom-persona-01.jpg" },
+  INTP: { name: "The Arc", img: "img/geom-persona-11.jpg" },
+  ESTP: { name: "The Spark", img: "img/geom-persona-05.jpg" },
+  ESFP: { name: "The Beacon", img: "img/geom-persona-08.jpg" },
+  ENFP: { name: "The Fractal", img: "img/geom-persona-09.jpg" },
+  ENTP: { name: "The Prism", img: "img/geom-persona-12.jpg" },
+  ESTJ: { name: "The Apex", img: "img/geom-persona-06.jpg" },
+  ESFJ: { name: "The Hive", img: "img/geom-persona-16.jpg" },
+  ENFJ: { name: "The Orb", img: "img/geom-persona-02.jpg" },
+  ENTJ: { name: "The Shift", img: "img/geom-persona-10.jpg" }
+};
+
+    function getOptionText(questionIndex, option) {
+      return optionTexts[questionIndex][option];
+    }
+
+    let currentQuestion = 0;
+    const answers = [];
+
+    function showQuestion() {
+      const form = document.getElementById("quizForm");
+      form.innerHTML = "";
+      const q = questions[currentQuestion];
+      const div = document.createElement("div");
+      div.className = "question";
+      div.style.display = "block";
+      div.innerHTML = `
+        <h2>${currentQuestion + 1}. ${questionTitles[currentQuestion]}</h2>
+        <img src="${q.img}" alt="Question image" />
+        <p>${q.text}</p>
+      `;
+      q.options.forEach(opt => {
+        div.innerHTML += `
+          <div class="options">
+            <label>
+              <input type="radio" name="q${currentQuestion}" value="${opt}" required /> ${getOptionText(currentQuestion, opt)}
+            </label>
+          </div>
+        `;
+      });
+      form.appendChild(div);
+      document.getElementById("nextBtn").style.display = "block";
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector(`input[name="q${currentQuestion}"]:checked`);
+      if (!selected) {
+        alert("Please select an option before proceeding.");
+        return;
+      }
+      answers.push(selected.value);
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function getMBTI(answers) {
+      const counts = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+      answers.forEach((ans, idx) => {
+        const letter = mbtiMap[idx][ans];
+        counts[letter]++;
+      });
+      const mbti =
+        (counts.E >= counts.I ? 'E' : 'I') +
+        (counts.S >= counts.N ? 'S' : 'N') +
+        (counts.T >= counts.F ? 'T' : 'F') +
+        (counts.J >= counts.P ? 'J' : 'P');
+      return mbti;
+    }
+
+    function showResult() {
+      document.getElementById("quizForm").style.display = "none";
+      document.getElementById("nextBtn").style.display = "none";
+      const mbti = getMBTI(answers);
+      const persona = mbtiToPersona[mbti];
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").innerHTML = `
+        <h3>Your Persona is:</h3>
+        <img src="${persona.img}" alt="${persona.name}" />
+        <p style="text-align:center;">This is your cosmic reflection according to the stars.</p>
+      `;
+      
+    }
+
+    // Show the first question on page load
+    window.onload = showQuestion;
+  </script>
+</body>
+</html>
