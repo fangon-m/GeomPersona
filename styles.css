@@ -339,6 +339,12 @@ input[type="radio"] {
   #result img {
     max-width:  200vw;
   }
+
+    .about-container img{
+    width: 31.5%;
+    max-width: 250px;
+  }
+  
   .options label {
     font-size: 1rem;
     padding: 10px 8px;
